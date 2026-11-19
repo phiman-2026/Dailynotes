@@ -251,7 +251,7 @@ input[type=date]{color-scheme:light}
 .stat>div>span{display:block;font-size:13px;color:var(--ink-3)}
 
 /* =====================================================================
-   เมนู 1: เอกสารรายวัน
+   เมนู 1: สมุดบันทึกหมายเหตุรายวัน
    ===================================================================== */
 .daily-grid{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:22px;align-items:start}
 .editor{padding:0;border-radius:var(--r-xl);overflow:hidden}
@@ -648,7 +648,7 @@ dialog[open]{animation:materialize .45s var(--ease)}
     <p class="nav-label">เมนู</p>
     <nav class="nav" role="tablist" aria-label="เมนูหลัก">
       <span class="nav-ind" aria-hidden="true"></span>
-      <button class="tab" role="tab" data-tab="daily" aria-selected="true"><span class="tab-ico"><svg><use href="#i-book"/></svg></span>เอกสารรายวัน<span class="count num" id="navNotes">0</span></button>
+      <button class="tab" role="tab" data-tab="daily" aria-selected="true"><span class="tab-ico"><svg><use href="#i-book"/></svg></span>สมุดบันทึกหมายเหตุรายวัน<span class="count num" id="navNotes">0</span></button>
       <button class="tab" role="tab" data-tab="docs" aria-selected="false"><span class="tab-ico"><svg><use href="#i-folder"/></svg></span>เอกสารสำคัญ<span class="count num" id="navDocs">0</span></button>
     </nav>
     <div class="today-card">
@@ -663,12 +663,12 @@ dialog[open]{animation:materialize .45s var(--ease)}
   </aside>
 
   <main class="content">
-    <!-- ================= เมนู 1: เอกสารรายวัน ================= -->
+    <!-- ================= เมนู 1: สมุดบันทึกหมายเหตุรายวัน ================= -->
     <section id="tab-daily" class="panel-enter" role="tabpanel">
       <header class="page-head">
         <div>
           <p class="eyebrow">บันทึกประจำวัน</p>
-          <h1 class="h-display">เอกสารรายวัน</h1>
+          <h1 class="h-display">สมุดบันทึกหมายเหตุรายวัน</h1>
           <p class="sub" id="todayText"></p>
         </div>
         <div class="page-actions">
@@ -1149,7 +1149,7 @@ function switchTab(tab){
 }
 
 /* ================================================================
- *  เมนู 1: เอกสารรายวัน
+ *  เมนู 1: สมุดบันทึกหมายเหตุรายวัน
  * ================================================================ */
 const fields = { facts:'#fFacts', events:'#fEvents', summary:'#fSummary' };
 
