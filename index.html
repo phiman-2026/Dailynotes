@@ -498,7 +498,7 @@ dialog[open]{animation:materialize .45s var(--ease)}
 .pdf-head img{display:block;height:24mm;width:auto;margin:0 auto 3mm}
 .pdf-head .t1{font-weight:700;font-size:1.3em}
 .pdf-head .t3{margin-top:2pt}
-.pdf-date{font-weight:700;margin-top:10pt;padding-bottom:2pt;border-bottom:.6pt solid #000}
+.pdf-date{font-weight:700;margin-top:10pt;margin-bottom:6pt;padding-bottom:2pt;border-bottom:.6pt solid #000}
 .pdf-h3{font-weight:700;margin-top:8pt}
 .pdf-p{text-indent:2.5cm;word-wrap:break-word}
 .pdf-p.cont{text-indent:0}
@@ -1322,10 +1322,8 @@ function buildBlocks(notes, layout, opt){
   const head = range => blocks.push({ type:'head', range, keep:true });
   const addNote = n => {
     blocks.push({ type:'date', text:N(thaiLong(n.date)), keep:true });
-    let k = 1;
     SECTIONS.forEach(s => {
       const t = (n[s.key] || '').trim(); if (!t) return;
-      blocks.push({ type:'h3', text:N(`${k++}. ${s.label}`), keep:true });
       t.split(/\n+/).map(x => x.trim()).filter(Boolean).forEach(line => blocks.push({ type:'p', text:N(line) }));
     });
   };
