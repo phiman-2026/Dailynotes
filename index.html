@@ -300,6 +300,17 @@ input[type=date]{color-scheme:light}
 .para .textarea:focus{box-shadow:none}
 .editor-foot{position:relative;z-index:1;display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:16px 26px 22px;border-top:1px solid var(--line);background:linear-gradient(0deg,rgba(246,248,252,.85),rgba(255,255,255,0))}
 .editor-foot .hint{flex:1;min-width:200px;margin:0;font-size:12.5px;color:var(--ink-3)}
+/* signature preview in editor */
+.sign-preview{position:relative;z-index:1;display:flex;justify-content:flex-end;padding:4px 26px 20px}
+.sp-box{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:260px;padding:10px 18px 12px;border:1px dashed transparent;border-radius:16px;background:transparent;cursor:pointer;text-align:center;
+  transition:background var(--t-med) var(--ease),border-color var(--t-med) var(--ease),transform var(--t-fast) var(--ease)}
+.sp-box:hover{background:rgba(255,255,255,.85);border-color:var(--silver-300)}
+.sp-box:active{transform:scale(.98)}
+.sp-label{font-size:11.5px;font-weight:600;color:var(--ink-4);margin-bottom:4px}
+.sp-box img{max-height:64px;max-width:220px;object-fit:contain}
+.sp-box b{font-size:14.5px;color:var(--navy-900);white-space:pre}
+.sp-box small{font-size:12.5px;color:var(--ink-3)}
+.sig-empty{display:grid;place-items:center;width:200px;height:58px;border-radius:12px;font-size:13px;font-weight:600;color:var(--gold-700);background:var(--gold-50);border:1.5px dashed var(--gold-300)}
 kbd{font:600 11.5px/1 var(--font);padding:3px 6px;border-radius:6px;background:#fff;box-shadow:0 0 0 1px var(--silver-300) inset,0 1px 0 var(--silver-300);color:var(--ink-2)}
 
 /* side: calendar + list */
@@ -503,6 +514,24 @@ dialog[open]{animation:materialize .45s var(--ease)}
 .pdf-p{text-indent:2.5cm;word-wrap:break-word}
 .pdf-p.cont{text-indent:0}
 .pdf-sep{text-align:center;margin:12pt 0 0;letter-spacing:.4em}
+/* บรรทัดกระจายแบบไทย (Thai Distributed) */
+.pdf-line{display:flex;justify-content:space-between;white-space:pre;overflow:hidden}
+.pdf-line.last{display:block}
+.pdf-line.first{padding-left:2.5cm}
+/* ลายเซ็นท้ายบันทึก (ล่างขวา) */
+.pdf-sign{display:flex;justify-content:flex-end;margin-top:14pt}
+.pdf-sign .sig{width:80mm;text-align:center}
+.pdf-sign .sig-img{height:17mm;display:flex;align-items:flex-end;justify-content:center;margin-bottom:1mm}
+.pdf-sign .sig-img img{max-height:17mm;max-width:55mm;object-fit:contain}
+.pdf-sign .nm{white-space:pre}
+.pdf-sign+.pdf-date{margin-top:20pt}
+/* หน้าตั้งค่าลายเซ็น */
+.sig-stage{display:flex;flex-direction:column;align-items:center;gap:2px;padding:18px 16px 16px;border-radius:var(--r-md);text-align:center;
+  background:repeating-conic-gradient(#f1f4f9 0 25%,#fff 0 50%) 0 0/16px 16px;box-shadow:0 0 0 1px var(--silver-200) inset}
+.sig-stage .sig-img{height:96px;display:flex;align-items:flex-end;justify-content:center}
+.sig-stage img{max-height:96px;max-width:300px;object-fit:contain}
+.sig-stage b{font-size:15px;color:#000;white-space:pre}
+.sig-stage small{font-size:13.5px;color:#000}
 #pdfStage,#captureStage{position:fixed;left:0;top:0;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;z-index:-1}
 #printRoot{display:none}
 @media print{
@@ -621,6 +650,7 @@ dialog[open]{animation:materialize .45s var(--ease)}
     <symbol id="i-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></symbol>
     <symbol id="i-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></symbol>
     <symbol id="i-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
+    <symbol id="i-sign" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 17-2.156-1.868A.5.5 0 0 0 18 15.5v.5a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1c0-2.545-3.991-3.97-8.5-4a1 1 0 0 0 0 5c4.153 0 4.745-11.295 5.708-13.5a2.5 2.5 0 1 1 3.31 3.284"/><path d="M3 21h18"/></symbol>
   </defs>
 </svg>
 
@@ -672,6 +702,7 @@ dialog[open]{animation:materialize .45s var(--ease)}
           <p class="sub" id="todayText"></p>
         </div>
         <div class="page-actions">
+          <button class="btn btn-ghost" id="btnSign"><svg><use href="#i-sign"/></svg>ลายเซ็น</button>
           <button class="btn btn-ghost" id="btnNewNote"><svg><use href="#i-plus"/></svg>บันทึกวันนี้</button>
           <button class="btn btn-gold" id="btnExport"><svg><use href="#i-download"/></svg>ดาวน์โหลด PDF</button>
         </div>
@@ -721,6 +752,8 @@ dialog[open]{animation:materialize .45s var(--ease)}
               </div>
             </div>
           </div>
+
+          <div class="sign-preview"><button type="button" class="sp-box" id="signPreview" title="คลิกเพื่อตั้งค่าลายเซ็น"></button></div>
 
           <div class="editor-foot">
             <p class="hint">กรอกเฉพาะย่อหน้าที่ต้องการ · ขึ้นบรรทัดใหม่ = ย่อหน้าใหม่ใน PDF · <kbd>Ctrl</kbd> + <kbd>S</kbd> เพื่อบันทึก</p>
@@ -857,6 +890,7 @@ dialog[open]{animation:materialize .45s var(--ease)}
           </div>
           <label class="switch">ใช้ตัวเลขไทย (๑ ๒ ๓)<input type="checkbox" id="exThaiNum" checked></label>
           <label class="switch">แสดงตราโรงเรียนที่หัวกระดาษ<input type="checkbox" id="exLogo" checked></label>
+          <label class="switch">แสดงลายเซ็นท้ายบันทึกแต่ละวัน<input type="checkbox" id="exSign" checked></label>
           <p class="font-info" id="exFontInfo">กำลังตรวจสอบฟอนต์...</p>
           <div style="display:grid;gap:10px">
             <button class="btn btn-gold" id="btnDoDownload"><svg><use href="#i-download"/></svg>ดาวน์โหลดไฟล์ PDF</button>
@@ -880,6 +914,35 @@ dialog[open]{animation:materialize .45s var(--ease)}
     </div>
     <div style="padding:0 20px 20px;position:relative;z-index:1"><iframe class="pdf-frame" id="viewFrame" title="ตัวอย่างเอกสาร" allow="autoplay"></iframe></div>
   </div>
+</dialog>
+
+<!-- ===== Dialog: ลายเซ็น ===== -->
+<dialog id="dlgSign">
+  <form class="dlg gborder" id="signForm" novalidate>
+    <div class="dlg-head">
+      <span class="d-ico ico-gold"><svg><use href="#i-sign"/></svg></span>
+      <div class="t"><h3>ลายเซ็นท้ายบันทึก</h3><p>อัปโหลดครั้งเดียว ระบบจะแนบให้ทุกวันโดยอัตโนมัติ</p></div>
+      <button type="button" class="btn btn-ghost btn-icon btn-sm" data-close aria-label="ปิด"><svg><use href="#i-x"/></svg></button>
+    </div>
+    <div class="dlg-body">
+      <div class="sig-stage" id="sigStage"></div>
+      <label class="drop" id="sigDrop">
+        <input type="file" id="sigFile" accept="image/png,image/jpeg" class="sr-only">
+        <span class="d-up"><svg><use href="#i-upload"/></svg></span>
+        <span><b id="sigDropText">เลือกรูปลายเซ็น</b><small>PNG หรือ JPG · แนะนำให้เซ็นบนกระดาษขาวแล้วถ่ายรูปหรือสแกน</small></span>
+      </label>
+      <label class="switch">ลบพื้นหลังสีขาวออกอัตโนมัติ<input type="checkbox" id="sigClean" checked></label>
+      <div class="row2">
+        <div class="field"><label for="sigName">ชื่อ-นามสกุล (ไม่ต้องใส่วงเล็บ)</label><input id="sigName" class="input" maxlength="200"></div>
+        <div class="field"><label for="sigPos">ตำแหน่ง</label><input id="sigPos" class="input" maxlength="300"></div>
+      </div>
+    </div>
+    <div class="dlg-foot">
+      <button type="button" class="btn btn-danger" id="btnSigRemove" style="margin-right:auto"><svg><use href="#i-trash"/></svg>ลบรูปลายเซ็น</button>
+      <button type="button" class="btn btn-ghost" data-close>ยกเลิก</button>
+      <button type="submit" class="btn btn-primary" id="btnSigSave"><svg><use href="#i-save"/></svg>บันทึก</button>
+    </div>
+  </form>
 </dialog>
 
 <!-- ===== Dialog: ยืนยัน ===== -->
@@ -906,7 +969,7 @@ dialog[open]{animation:materialize .45s var(--ease)}
  *  ตั้งค่าระบบ — แก้ไข 2 ค่าแรกให้ตรงกับของจริง
  * ================================================================ */
 const APP_CONFIG = {
-  API_URL: 'https://script.google.com/macros/s/AKfycbxu1rEjfOtY6w2iIzIFh1q9yQeFyCKKfL0o40w_MiQqyPtDLOOb6OiOzJmwx0NscJUY/exec',
+  API_URL: 'https://script.google.com/macros/s/AKfycbyptdxqGuT6PH2IHT5vIEs1pYETrjVPkHrmVR5FFIG8kArQysBwe4oIk4AEz3pyAVXm/exec',
   GOOGLE_CLIENT_ID: '43513997553-nc5f9d7rcsclj3hdfkf5ht8svucj04gv.apps.googleusercontent.com',
   ALLOWED_EMAIL: 'dailynotes@phiman.ac.th',
   SCHOOL_NAME: 'โรงเรียนพิมานพิทยาสรรค์',
@@ -1003,7 +1066,8 @@ function loadScript(src){
 /* ================================================================
  *  API
  * ================================================================ */
-const state = { session:null, notes:[], docs:[], curId:null, dirty:false, tab:'daily', agency:'all', editDoc:null, file:null, uploading:false, cal:null, view:(store.get('dn_view') || 'list') };
+const state = { session:null, notes:[], docs:[], curId:null, dirty:false, tab:'daily', agency:'all', editDoc:null, file:null, uploading:false, cal:null, view:(store.get('dn_view') || 'list'),
+  settings:{ signName:'นายสิรวุฒิ  ยุนุ้ย', signPosition:'ผู้อำนวยการโรงเรียนพิมานพิทยาสรรค์', signature:'' }, sigDraft:null, sigFile:null };
 
 async function api(action, payload = {}){
   if (DEMO) return demoApi(action, payload);
@@ -1035,7 +1099,14 @@ async function demoApi(action, p){
   switch (action){
     case 'login': return { ok:true, token:'demo'.repeat(10), email:APP_CONFIG.ALLOWED_EMAIL, name:'ผู้อำนวยการ (ทดลอง)', picture:'' };
     case 'logout': case 'ping': return { ok:true };
-    case 'bootstrap': return { ok:true, notes:[...db.notes].sort((a,b)=>b.date.localeCompare(a.date)), docs:[...db.docs].sort((a,b)=>b.createdAt.localeCompare(a.createdAt)) };
+    case 'bootstrap': return { ok:true, notes:[...db.notes].sort((a,b)=>b.date.localeCompare(a.date)), docs:[...db.docs].sort((a,b)=>b.createdAt.localeCompare(a.createdAt)), settings:db.settings || state.settings };
+    case 'saveSettings': {
+      const cur = db.settings || { ...state.settings }; const x = p.settings;
+      if (x.signName != null) cur.signName = x.signName.replace(/[()]/g, '').trim();
+      if (x.signPosition != null) cur.signPosition = x.signPosition.trim();
+      if (x.signature != null) cur.signature = x.signature;
+      db.settings = cur; save(); return { ok:true, settings:cur };
+    }
     case 'saveNote': {
       const n = p.note; let f = db.notes.find(x => x.id === n.id) || db.notes.find(x => x.date === n.date);
       const rec = { id:f?.id || uid(), date:n.date, facts:n.facts.trim(), events:n.events.trim(), summary:n.summary.trim(), createdAt:f?.createdAt || now, updatedAt:now };
@@ -1121,6 +1192,8 @@ async function enterApp(){
   $('#docGrid').innerHTML = '<div class="skeleton"></div>'.repeat(3);
   const r = await api('bootstrap');
   state.notes = r.notes || []; state.docs = r.docs || [];
+  if (r.settings) state.settings = r.settings;
+  renderSign();
   renderMonths(); renderChips(); renderDocs();
   openDate(todayYMD(), true);
 }
@@ -1316,23 +1389,61 @@ function segmentWords(text){
   return Array.from(text);
 }
 
+const PX_MM = 96 / 25.4;
+const graphemes = s => window.Intl?.Segmenter ? [...new Intl.Segmenter('th', { granularity:'grapheme' }).segment(s)].map(x => x.segment) : Array.from(s);
+function measureCtx(){
+  const c = measureCtx.c ||= document.createElement('canvas').getContext('2d');
+  c.font = pdf.font === 'fallback' ? '12pt Sarabun, serif' : '16pt THSarabunIT, serif';
+  return c;
+}
+// ตัดบรรทัดตามคำ (Thai word break) ให้พอดีความกว้างหน้ากระดาษ 16 ซม.
+function breakLines(text){
+  const ctx = measureCtx(), W = 160 * PX_MM - 2, IND = 25 * PX_MM;
+  const cache = new Map(), wOf = t => { if (!cache.has(t)) cache.set(t, ctx.measureText(t).width); return cache.get(t); };
+  const lines = []; let cur = '', curW = 0, avail = W - IND;
+  const push = () => { lines.push(cur.replace(/\s+$/, '')); cur = ''; curW = 0; avail = W; };
+  for (const w of segmentWords(text)){
+    const space = /^\s+$/.test(w);
+    if (!cur && space) continue;
+    const ww = wOf(w);
+    if (curW + ww <= avail){ cur += w; curW += ww; continue; }
+    if (space){ push(); continue; }
+    if (cur) push();
+    if (ww <= avail){ cur = w; curW = ww; continue; }
+    for (const g of graphemes(w)){ const gw = wOf(g); if (cur && curW + gw > avail) push(); cur += g; curW += gw; }
+  }
+  if (cur.trim()) lines.push(cur.replace(/\s+$/, ''));
+  return lines;
+}
+// แยกหน่วยสำหรับกระจายช่องไฟ โดยไม่แยกสระบน/วรรณยุกต์ออกจากพยัญชนะ
+function distUnits(line){
+  const out = [];
+  for (const g of graphemes(line)){
+    if (out.length && /^[ัำ-ฺ็-๎]/.test(g)) out[out.length-1] += g; else out.push(g);
+  }
+  return out;
+}
+
 function buildBlocks(notes, layout, opt){
   const N = s => opt.thaiNum ? thaiNum(s) : String(s);
   const blocks = [];
-  const head = range => blocks.push({ type:'head', range, keep:true });
+  const head = () => blocks.push({ type:'head', keep:true });
   const addNote = n => {
     blocks.push({ type:'date', text:N(thaiLong(n.date)), keep:true });
     SECTIONS.forEach(s => {
       const t = (n[s.key] || '').trim(); if (!t) return;
-      t.split(/\n+/).map(x => x.trim()).filter(Boolean).forEach(line => blocks.push({ type:'p', text:N(line) }));
+      t.split(/\n+/).map(x => x.trim()).filter(Boolean).forEach(para => {
+        const lines = breakLines(N(para));
+        lines.forEach((ln, i) => blocks.push({ type:'line', text:ln, first:i === 0, last:i === lines.length - 1 }));
+      });
     });
+    if (opt.sign) blocks.push({ type:'sign' });
   };
   if (layout === 'continuous'){
-    const first = notes[0].date, last = notes[notes.length-1].date;
-    head(first === last ? null : N(`ระหว่างวันที่ ${thaiMedium(first)} ถึงวันที่ ${thaiMedium(last)}`));
-    notes.forEach((n, i) => { if (i) blocks.push({ type:'sep' }); addNote(n); });
+    head();
+    notes.forEach(addNote);
   } else {
-    notes.forEach((n, i) => { if (i) blocks.push({ type:'break' }); head(null); addNote(n); });
+    notes.forEach((n, i) => { if (i) blocks.push({ type:'break' }); head(); addNote(n); });
   }
   return blocks;
 }
@@ -1343,8 +1454,19 @@ function renderBlock(b, opt){
       const h = el('div', 'pdf-head');
       if (opt.logo && pdf.logo){ const i = el('img'); i.src = pdf.logo; i.alt = ''; h.appendChild(i); }
       h.append(el('div', 't1', 'สมุดบันทึกหมายเหตุรายวัน'), el('div', 't2', `${APP_CONFIG.OWNER_TITLE}${APP_CONFIG.SCHOOL_NAME.replace(/^โรงเรียน/, '')}`));
-      if (b.range) h.appendChild(el('div', 't3', b.range));
       return h;
+    }
+    case 'line': {
+      const d = el('div', 'pdf-line' + (b.first ? ' first' : '') + (b.last ? ' last' : ''));
+      const u = b.last ? [] : distUnits(b.text);
+      if (u.length < 2) d.textContent = b.text; else u.forEach(x => d.appendChild(el('span', null, x)));
+      return d;
+    }
+    case 'sign': {
+      const st = state.settings, w = el('div', 'pdf-sign'), box = el('div', 'sig'), im = el('div', 'sig-img');
+      if (st.signature){ const i = el('img'); i.src = st.signature; i.alt = ''; im.appendChild(i); }
+      box.append(im, el('div', 'nm', `(${st.signName})`), el('div', 'ps', st.signPosition));
+      w.appendChild(box); return w;
     }
     case 'date': return el('div', 'pdf-date', b.text);
     case 'h3': return el('div', 'pdf-h3', b.text);
@@ -1365,32 +1487,15 @@ function paginate(blocks, opt){
   const over = () => cur.body.scrollHeight > cur.body.clientHeight + 1;
   const empty = () => !cur.body.childElementCount;
   newPage();
-  const queue = blocks.slice();
-  while (queue.length){
-    const b = queue.shift();
+  for (const b of blocks){
     if (b.type === 'break'){ if (!empty()) newPage(); continue; }
-    if (b.type === 'sep' && empty()) continue;
     const node = renderBlock(b, opt);
     cur.body.appendChild(node);
     if (b.keep){ // หัวข้อต้องมีเนื้อหาตามอย่างน้อย 1 บรรทัด
-      const probe = renderBlock({ type:'p', text:'ทดสอบ' }, opt); cur.body.appendChild(probe);
+      const probe = renderBlock({ type:'line', text:'ทดสอบ', last:true }, opt); cur.body.appendChild(probe);
       const o = over(); probe.remove();
       if (o && cur.body.childElementCount > 1){ node.remove(); newPage(); cur.body.appendChild(node); }
-      continue;
-    }
-    if (!over()) continue;
-    if (b.type === 'p'){
-      const segs = segmentWords(b.text);
-      let lo = 0, hi = segs.length;
-      while (lo < hi){ const mid = Math.ceil((lo + hi) / 2); node.textContent = segs.slice(0, mid).join(''); if (over()) hi = mid - 1; else lo = mid; }
-      const wasOnly = cur.body.childElementCount === 1;
-      if (lo === 0 && !wasOnly){ node.remove(); newPage(); queue.unshift(b); continue; }
-      if (lo === 0) lo = 1;
-      node.textContent = segs.slice(0, lo).join('');
-      const rest = segs.slice(lo).join('').replace(/^\s+/, '');
-      newPage();
-      if (rest) queue.unshift({ type:'p', text:rest, cont:true });
-    } else if (cur.body.childElementCount > 1){ node.remove(); newPage(); cur.body.appendChild(node); }
+    } else if (over() && cur.body.childElementCount > 1){ node.remove(); newPage(); cur.body.appendChild(node); }
   }
   if (pages.length > 1 && !pages[pages.length-1].body.childElementCount){ pages.pop().sheet.remove(); }
   pages.forEach((p, i) => { p.no.textContent = i ? `- ${opt.thaiNum ? thaiNum(i+1) : i+1} -` : ''; });
@@ -1401,7 +1506,7 @@ function exportOpts(){
   return {
     from: $('#exFrom').value, to: $('#exTo').value,
     layout: $('input[name=exLayout]:checked').value,
-    thaiNum: $('#exThaiNum').checked, logo: $('#exLogo').checked
+    thaiNum: $('#exThaiNum').checked, logo: $('#exLogo').checked, sign: $('#exSign').checked
   };
 }
 function notesInRange(from, to){
@@ -1419,6 +1524,7 @@ async function buildPreview(){
   exSheets = [];
   if (!notes.length){ pv.innerHTML = emptyHTML('i-cal', 'ไม่มีบันทึกในช่วงวันที่ที่เลือก', 'div'); return; }
   exSheets = paginate(buildBlocks(notes, o.layout, o), o);
+  if (o.sign && !state.settings.signature) toast('ยังไม่ได้อัปโหลดรูปลายเซ็น PDF จะเว้นที่ว่างไว้เหนือชื่อ', 'warn');
   pv.innerHTML = `<div class="pv-info">ตัวอย่าง <b>${notes.length} วัน</b> · <b>${exSheets.length} หน้า</b> กระดาษ A4</div>`;
   exSheets.forEach(s => { const w = el('div', 'pv-page'); w.appendChild(s.cloneNode(true)); pv.appendChild(w); });
 }
@@ -1623,6 +1729,71 @@ async function docAction(act, doc){
 }
 
 /* ================================================================
+ *  ลายเซ็นท้ายบันทึก
+ * ================================================================ */
+const sigInner = st => `${st.signature ? `<img src="${st.signature}" alt="ลายเซ็น">` : '<span class="sig-empty">+ อัปโหลดลายเซ็น</span>'}<b>(${esc(st.signName)})</b><small>${esc(st.signPosition)}</small>`;
+function renderSign(){
+  $('#signPreview').innerHTML = `<span class="sp-label">ลายเซ็นท้ายบันทึก · คลิกเพื่อแก้ไข</span>${sigInner(state.settings)}`;
+}
+function renderSigStage(){
+  const sig = state.sigDraft ?? state.settings.signature;
+  const name = $('#sigName').value.replace(/[()]/g, '').trim(), pos = $('#sigPos').value.trim();
+  $('#sigStage').innerHTML = `<div class="sig-img">${sig ? `<img src="${sig}" alt="ลายเซ็น">` : '<span class="sig-empty">ยังไม่มีรูปลายเซ็น</span>'}</div><b>(${esc(name)})</b><small>${esc(pos)}</small>`;
+  $('#btnSigRemove').hidden = !sig;
+}
+function openSign(){
+  state.sigDraft = null; state.sigFile = null; $('#sigFile').value = '';
+  $('#sigName').value = state.settings.signName; $('#sigPos').value = state.settings.signPosition;
+  $('#sigDropText').textContent = state.settings.signature ? 'เปลี่ยนรูปลายเซ็น' : 'เลือกรูปลายเซ็น';
+  renderSigStage(); $('#dlgSign').showModal();
+}
+async function processSignature(file, clean){
+  const url = URL.createObjectURL(file);
+  try {
+    const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej(new Error('เปิดรูปไม่สำเร็จ')); i.src = url; });
+    const k = Math.min(1, 1400 / img.naturalWidth);
+    const w = Math.round(img.naturalWidth * k), h = Math.round(img.naturalHeight * k);
+    const c = document.createElement('canvas'); c.width = w; c.height = h;
+    const ctx = c.getContext('2d', { willReadFrequently:true }); ctx.drawImage(img, 0, 0, w, h);
+    const data = ctx.getImageData(0, 0, w, h), px = data.data;
+    let x0 = w, y0 = h, x1 = -1, y1 = -1;
+    for (let i = 0; i < px.length; i += 4){
+      if (clean){
+        const br = (px[i] + px[i+1] + px[i+2]) / 3;
+        if (br >= 232) px[i+3] = 0; else if (br > 190) px[i+3] = Math.round(px[i+3] * (232 - br) / 42);
+      }
+      if (px[i+3] > 24){ const p = i / 4, x = p % w, y = (p / w) | 0; if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+    }
+    if (x1 < 0) throw new Error('ไม่พบลายเส้นในรูป ลองปิดการลบพื้นหลัง หรือใช้รูปที่ชัดขึ้น');
+    ctx.putImageData(data, 0, 0);
+    const pad = 8; x0 = Math.max(0, x0 - pad); y0 = Math.max(0, y0 - pad); x1 = Math.min(w - 1, x1 + pad); y1 = Math.min(h - 1, y1 + pad);
+    const cw = x1 - x0 + 1, ch = y1 - y0 + 1, s2 = Math.min(1, 700 / cw);
+    const out = document.createElement('canvas'); out.width = Math.round(cw * s2); out.height = Math.round(ch * s2);
+    out.getContext('2d').drawImage(c, x0, y0, cw, ch, 0, 0, out.width, out.height);
+    return out.toDataURL('image/png');
+  } finally { URL.revokeObjectURL(url); }
+}
+async function pickSignature(f){
+  if (!f) return;
+  if (!/^image\/(png|jpeg)$/.test(f.type)) return toast('รองรับเฉพาะรูป PNG หรือ JPG', 'warn');
+  if (f.size > 15 * 1048576) return toast('รูปใหญ่เกิน 15 MB', 'warn');
+  state.sigFile = f;
+  try { state.sigDraft = await processSignature(f, $('#sigClean').checked); $('#sigDropText').textContent = f.name; renderSigStage(); }
+  catch (e){ toast(e.message, 'err'); }
+}
+async function saveSign(e){
+  e.preventDefault();
+  const name = $('#sigName').value.replace(/[()]/g, '').trim(), pos = $('#sigPos').value.trim();
+  if (!name) return toast('กรุณากรอกชื่อ-นามสกุล', 'warn');
+  const btn = $('#btnSigSave'); setBusy(btn, true, 'กำลังบันทึก...');
+  try {
+    const r = await api('saveSettings', { settings:{ signName:name, signPosition:pos, signature: state.sigDraft } });
+    state.settings = r.settings; renderSign(); $('#dlgSign').close(); toast('บันทึกลายเซ็นเรียบร้อย');
+  } catch (err){ toast(err.message, 'err', 6000); }
+  finally { setBusy(btn, false); }
+}
+
+/* ================================================================
  *  Events
  * ================================================================ */
 function bind(){
@@ -1633,6 +1804,7 @@ function bind(){
   $('#todayText').textContent = 'วันนี้ ' + thaiLong(todayYMD());
   $('#tdDay').textContent = td.getDate();
   $('#tdText').innerHTML = `วัน${TH_DAYS[td.getDay()]}<br>${TH_MONTHS[td.getMonth()]} ${td.getFullYear()+543}`;
+  renderSign();
   $('#docAgency').innerHTML = '<option value="">— เลือกหน่วยงาน —</option>' + AGENCIES.map(a => `<option value="${esc(a.name)}">${esc(a.name)}</option>`).join('');
 
   $$('.tab').forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
@@ -1663,7 +1835,7 @@ function bind(){
   // export
   $('#btnExport').onclick = () => openExport(false);
   $('#btnExportOne').onclick = () => openExport(true);
-  ['#exFrom','#exTo','#exThaiNum','#exLogo'].forEach(s => $(s).addEventListener('change', buildPreviewDebounced));
+  ['#exFrom','#exTo','#exThaiNum','#exLogo','#exSign'].forEach(s => $(s).addEventListener('change', buildPreviewDebounced));
   $$('input[name=exLayout]').forEach(r => r.addEventListener('change', buildPreviewDebounced));
   $('#btnDoDownload').onclick = downloadPdf;
   $('#btnDoPrint').onclick = printPdf;
@@ -1684,6 +1856,19 @@ function bind(){
   ['dragenter','dragover'].forEach(t => dz.addEventListener(t, e => { e.preventDefault(); dz.classList.add('over'); }));
   ['dragleave','drop'].forEach(t => dz.addEventListener(t, e => { e.preventDefault(); dz.classList.remove('over'); }));
   dz.addEventListener('drop', e => pickFile(e.dataTransfer.files[0]));
+
+  // signature
+  $('#btnSign').onclick = openSign;
+  $('#signPreview').onclick = openSign;
+  $('#sigFile').addEventListener('change', e => pickSignature(e.target.files[0]));
+  $('#sigClean').addEventListener('change', () => state.sigFile && pickSignature(state.sigFile));
+  ['#sigName','#sigPos'].forEach(x => $(x).addEventListener('input', renderSigStage));
+  $('#btnSigRemove').onclick = () => { state.sigDraft = ''; state.sigFile = null; $('#sigFile').value = ''; $('#sigDropText').textContent = 'เลือกรูปลายเซ็น'; renderSigStage(); };
+  $('#signForm').addEventListener('submit', saveSign);
+  const sd = $('#sigDrop');
+  ['dragenter','dragover'].forEach(t => sd.addEventListener(t, e => { e.preventDefault(); sd.classList.add('over'); }));
+  ['dragleave','drop'].forEach(t => sd.addEventListener(t, e => { e.preventDefault(); sd.classList.remove('over'); }));
+  sd.addEventListener('drop', e => pickSignature(e.dataTransfer.files[0]));
 
   // dialogs
   $$('dialog').forEach(d => {
